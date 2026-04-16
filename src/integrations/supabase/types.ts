@@ -91,6 +91,7 @@ export type Database = {
           file_size_bytes: number | null
           file_type: string
           id: string
+          parse_error: string | null
           parse_status: string | null
           project_id: string | null
           uploaded_by: string | null
@@ -103,6 +104,7 @@ export type Database = {
           file_size_bytes?: number | null
           file_type: string
           id?: string
+          parse_error?: string | null
           parse_status?: string | null
           project_id?: string | null
           uploaded_by?: string | null
@@ -115,6 +117,7 @@ export type Database = {
           file_size_bytes?: number | null
           file_type?: string
           id?: string
+          parse_error?: string | null
           parse_status?: string | null
           project_id?: string | null
           uploaded_by?: string | null
