@@ -60,7 +60,13 @@ serve(async (req) => {
       } else if (fileType === 'pdf' || fileType === 'docx' || fileType === 'pptx') {
         // Use AI to extract text from binary formats
         const bytes = new Uint8Array(await fileData.arrayBuffer());
-        const base64 = btoa(String.fromCharCode(...bytes));
+        let binary = '';
+        const CHUNK_SIZE = 8192;
+        for (let i = 0; i < bytes.length; i += CHUNK_SIZE) {
+          const chunk = bytes.subarray(i, Math.min(i + CHUNK_SIZE, bytes.length));
+          binary += String.fromCharCode.apply(null, Array.from(chunk));
+        }
+        const base64 = btoa(binary);
         
         const mimeMap: Record<string, string> = {
           pdf: 'application/pdf',
@@ -109,7 +115,13 @@ serve(async (req) => {
       } else if (['jpeg', 'jpg', 'png', 'webp', 'image'].includes(fileType)) {
         // Image - use vision
         const bytes = new Uint8Array(await fileData.arrayBuffer());
-        const base64 = btoa(String.fromCharCode(...bytes));
+        let binary = '';
+        const CHUNK_SIZE = 8192;
+        for (let i = 0; i < bytes.length; i += CHUNK_SIZE) {
+          const chunk = bytes.subarray(i, Math.min(i + CHUNK_SIZE, bytes.length));
+          binary += String.fromCharCode.apply(null, Array.from(chunk));
+        }
+        const base64 = btoa(binary);
         
         const mimeMap: Record<string, string> = {
           jpeg: 'image/jpeg', jpg: 'image/jpeg',
