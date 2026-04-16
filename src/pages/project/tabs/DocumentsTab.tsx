@@ -2,7 +2,6 @@ import { useState, useCallback } from 'react';
 import { useParams } from 'react-router-dom';
 import { useDropzone } from 'react-dropzone';
 import { useDocuments, DocumentRecord } from '@/hooks/useDocuments';
-import { supabase } from '@/integrations/supabase/client';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
