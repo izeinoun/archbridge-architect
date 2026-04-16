@@ -18,6 +18,7 @@ import DiagramsTab from "@/pages/project/tabs/DiagramsTab";
 import SettingsTab from "@/pages/project/tabs/SettingsTab";
 import ActivityTimelineTab from "@/pages/project/tabs/ActivityTimelineTab";
 import AdminConfigPage from "./pages/AdminConfigPage";
+import AnalyticsPage from "./pages/AnalyticsPage";
 import PortalPage from "./pages/portal/PortalPage";
 import NotFound from "./pages/NotFound.tsx";
 
@@ -45,6 +46,7 @@ const App = () => (
                 <Route path="timeline" element={<ActivityTimelineTab />} />
                 <Route path="settings" element={<SettingsTab />} />
               </Route>
+              <Route path="analytics" element={<AnalyticsPage />} />
               <Route path="admin/config" element={<AdminConfigPage />} />
             </Route>
             <Route path="/portal/:token" element={<PortalPage />} />
