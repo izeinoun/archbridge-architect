@@ -74,7 +74,7 @@ serve(async (req) => {
           pptx: 'application/vnd.openxmlformats-officedocument.presentationml.presentation',
         };
 
-        const aiResponse = await fetch('https://ai.lovable.dev/v1/chat/completions', {
+        const aiResponse = await fetch('https://ai.gateway.lovable.dev/v1/chat/completions', {
           method: 'POST',
           headers: {
             'Authorization': `Bearer ${aiApiKey}`,
@@ -87,11 +87,9 @@ serve(async (req) => {
                 role: 'user',
                 content: [
                   {
-                    type: 'file',
-                    file: {
-                      filename: doc.file_name,
-                      content_type: mimeMap[fileType] || 'application/octet-stream',
-                      data: base64,
+                    type: 'image_url',
+                    image_url: {
+                      url: `data:${mimeMap[fileType] || 'application/octet-stream'};base64,${base64}`,
                     },
                   },
                   {
@@ -128,7 +126,7 @@ serve(async (req) => {
           png: 'image/png', webp: 'image/webp', image: 'image/jpeg',
         };
 
-        const aiResponse = await fetch('https://ai.lovable.dev/v1/chat/completions', {
+        const aiResponse = await fetch('https://ai.gateway.lovable.dev/v1/chat/completions', {
           method: 'POST',
           headers: {
             'Authorization': `Bearer ${aiApiKey}`,
