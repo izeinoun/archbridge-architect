@@ -105,9 +105,9 @@ export default function DocumentsTab() {
   }
 
   return (
-    <div className="flex h-full animate-fade-in">
+    <div className="flex flex-col md:flex-row h-full animate-fade-in">
       {/* Left panel */}
-      <div className="w-2/5 border-r border-border overflow-y-auto">
+      <div className="w-full md:w-2/5 md:border-r border-b md:border-b-0 border-border overflow-y-auto">
         {/* Upload zone */}
         <div
           {...getRootProps()}
@@ -170,8 +170,8 @@ export default function DocumentsTab() {
         </div>
       </div>
 
-      {/* Right panel - preview */}
-      <div className="flex-1 overflow-y-auto p-6">
+      {/* Right panel - preview (hidden on mobile when no selection) */}
+      <div className={`flex-1 overflow-y-auto p-6 ${!selected ? 'hidden md:flex' : ''}`}>
         {!selected ? (
           <div className="flex h-full items-center justify-center text-center">
             <div>

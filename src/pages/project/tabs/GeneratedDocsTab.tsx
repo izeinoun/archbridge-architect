@@ -95,11 +95,11 @@ export default function GeneratedDocsTab() {
   const docTypeLabel = DOC_TYPES.find(d => d.value === selectedType)?.label || '';
 
   return (
-    <div className="flex h-full">
+    <div className="flex flex-col md:flex-row h-full">
       {/* Share Link Modal */}
       <ShareLinkModal open={showShareModal} onClose={() => setShowShareModal(false)} projectId={id!} documents={documents.filter(d => d.document_type !== 'critique').map(d => ({ id: d.id, title: d.title, document_type: d.document_type, version: d.version || 1 }))} />
       {/* Left Panel */}
-      <div className="w-[35%] border-r border-border bg-card p-4 flex flex-col gap-4 overflow-y-auto">
+      <div className="w-full md:w-[35%] md:border-r border-b md:border-b-0 border-border bg-card p-4 flex flex-col gap-4 overflow-y-auto">
         {/* Share button */}
         <Button variant="outline" size="sm" onClick={() => setShowShareModal(true)} className="w-full">
           <Share2 className="h-4 w-4 mr-1" /> Share with Customer

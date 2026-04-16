@@ -66,14 +66,14 @@ export default function ProjectShell() {
             <NotificationBell />
           </div>
         </div>
-        <nav className="flex gap-1">
+        <nav className="flex gap-1 overflow-x-auto scrollbar-thin">
           {tabs.map(tab => {
             const isActive = currentTab === tab.path;
             return (
               <Link
                 key={tab.path}
                 to={`${basePath}${tab.path}`}
-                className={`flex items-center gap-1.5 rounded-md px-3 py-1.5 text-sm font-medium transition-colors ${
+                className={`flex items-center gap-1.5 rounded-md px-3 py-1.5 text-sm font-medium transition-colors whitespace-nowrap ${
                   isActive
                     ? 'bg-primary/10 text-primary'
                     : 'text-muted-foreground hover:text-foreground hover:bg-muted'
