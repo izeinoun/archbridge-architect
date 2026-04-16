@@ -4,12 +4,14 @@ import { useGeneratedDocs, DocTemplateType } from '@/hooks/useGeneratedDocs';
 import { useInsights } from '@/hooks/useInsights';
 import MarkdownRenderer from '@/components/MarkdownRenderer';
 import CritiquePanel from '@/components/CritiquePanel';
+import ShareLinkModal from '@/components/ShareLinkModal';
+import DocumentDiffModal from '@/components/DocumentDiffModal';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
-import { FileOutput, Download, Trash2, Loader2, RotateCcw, ShieldCheck, FileText } from 'lucide-react';
+import { FileOutput, Download, Trash2, Loader2, RotateCcw, ShieldCheck, FileText, Share2, GitCompare } from 'lucide-react';
 import { toast } from 'sonner';
 
 const DOC_TYPES: { value: DocTemplateType; label: string; icon: string; internal?: boolean }[] = [
@@ -34,6 +36,8 @@ export default function GeneratedDocsTab() {
   const [showCritique, setShowCritique] = useState(false);
   const [critiqueData, setCritiqueData] = useState<any>(null);
   const [critiqueLoading, setCritiqueLoading] = useState(false);
+  const [showShareModal, setShowShareModal] = useState(false);
+  const [showDiffModal, setShowDiffModal] = useState(false);
 
   const hasInsights = !!insights;
   const selectedDocument = documents.find(d => d.id === selectedDoc);
