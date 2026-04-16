@@ -24,10 +24,21 @@ export function useProject(projectId: string | undefined) {
     queryFn: async () => {
       const { data, error } = await supabase
         .from('project_members')
-        .select('*, profiles(*)')
+        .select('*')
         .eq('project_id', projectId!);
       if (error) throw error;
-      return data as (ProjectMember & { profiles: Profile })[];
+      
+      // Fetch profiles separately
+      const userIds = (data || []).map(m => m.user_id);
+      const { data: profiles } = await supabase
+        .from('profiles')
+        .select('*')
+        .in('id', userIds);
+      
+      return (data || []).map(m => ({
+        ...m,
+        profiles: (profiles || []).find(p => p.id === m.user_id) || null,
+      })) as (ProjectMember & { profiles: Profile })[];
     },
     enabled: !!projectId,
   });
