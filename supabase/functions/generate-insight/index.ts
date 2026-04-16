@@ -308,9 +308,15 @@ If you cannot find evidence for something, say so explicitly rather than inferri
     }
 
     const aiResult = await aiResponse.json();
+    const finishReason = aiResult.choices?.[0]?.finish_reason;
+    if (finishReason === 'length') {
+      return new Response(JSON.stringify({ 
+        error: 'AI output was truncated. Try generating again — the model may produce a shorter response on retry.' 
+      }), {
+        status: 422, headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      });
+    }
     let content = aiResult.choices?.[0]?.message?.content || '';
-
-    // Strip markdown code fences
     content = content.replace(/^```(?:json)?\s*\n?/gm, '').replace(/\n?```\s*$/gm, '').trim();
 
     let parsed: any;
