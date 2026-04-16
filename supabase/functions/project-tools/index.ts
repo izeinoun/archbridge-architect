@@ -58,6 +58,53 @@ serve(async (req) => {
 
     const body = await req.json();
 
+    // Portal (public, no auth needed for viewing)
+    if (body.action === 'portal') {
+      const { token } = body;
+      const { data: link, error: linkErr } = await supabase
+        .from('share_links')
+        .select('*')
+        .eq('token', token)
+        .eq('is_active', true)
+        .single();
+      if (linkErr || !link) {
+        return new Response(JSON.stringify({ error: 'Link not found or has expired' }), {
+          status: 404, headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        });
+      }
+      if (link.expires_at && new Date(link.expires_at) < new Date()) {
+        return new Response(JSON.stringify({ error: 'This link has expired' }), {
+          status: 404, headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        });
+      }
+
+      // Increment view count
+      await supabase.from('share_links').update({ view_count: (link.view_count || 0) + 1, last_viewed_at: new Date().toISOString() }).eq('id', link.id);
+
+      const { data: project } = await supabase.from('projects').select('customer_name').eq('id', link.project_id).single();
+      
+      const docIds = link.included_document_ids || [];
+      let docs: any[] = [];
+      if (docIds.length > 0) {
+        const { data } = await supabase.from('generated_documents').select('id, title, document_type, content, version, created_at').in('id', docIds);
+        docs = data || [];
+      }
+
+      let diagrams: any[] = [];
+      if (link.include_diagrams) {
+        const { data } = await supabase.from('generated_documents').select('id, title, content, diagram_description, created_at').eq('project_id', link.project_id).eq('document_type', 'diagram');
+        diagrams = data || [];
+      }
+
+      return new Response(JSON.stringify({
+        title: link.title,
+        description: link.description,
+        customer_name: project?.customer_name || '',
+        documents: docs,
+        diagrams,
+      }), { headers: { ...corsHeaders, 'Content-Type': 'application/json' } });
+    }
+
     // List diagrams
     if (body.action === 'list') {
       const { data: diagrams } = await supabase

@@ -14,6 +14,50 @@ export type Database = {
   }
   public: {
     Tables: {
+      activity_log: {
+        Row: {
+          action_type: string
+          created_at: string | null
+          entity_id: string | null
+          entity_name: string | null
+          entity_type: string | null
+          id: string
+          metadata: Json | null
+          project_id: string
+          user_id: string
+        }
+        Insert: {
+          action_type: string
+          created_at?: string | null
+          entity_id?: string | null
+          entity_name?: string | null
+          entity_type?: string | null
+          id?: string
+          metadata?: Json | null
+          project_id: string
+          user_id: string
+        }
+        Update: {
+          action_type?: string
+          created_at?: string | null
+          entity_id?: string | null
+          entity_name?: string | null
+          entity_type?: string | null
+          id?: string
+          metadata?: Json | null
+          project_id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "activity_log_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "projects"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       ai_templates: {
         Row: {
           created_at: string | null
@@ -255,12 +299,14 @@ export type Database = {
       }
       project_insights: {
         Row: {
+          approval_status: Json | null
           current_workflows: Json | null
           customer_goals: Json | null
           expected_outcomes: Json | null
           id: string
           implementation_roadmap: Json | null
           last_generated_at: string | null
+          locked: boolean | null
           pain_points: Json | null
           problem_statement: string | null
           project_id: string | null
@@ -268,12 +314,14 @@ export type Database = {
           updated_at: string | null
         }
         Insert: {
+          approval_status?: Json | null
           current_workflows?: Json | null
           customer_goals?: Json | null
           expected_outcomes?: Json | null
           id?: string
           implementation_roadmap?: Json | null
           last_generated_at?: string | null
+          locked?: boolean | null
           pain_points?: Json | null
           problem_statement?: string | null
           project_id?: string | null
@@ -281,12 +329,14 @@ export type Database = {
           updated_at?: string | null
         }
         Update: {
+          approval_status?: Json | null
           current_workflows?: Json | null
           customer_goals?: Json | null
           expected_outcomes?: Json | null
           id?: string
           implementation_roadmap?: Json | null
           last_generated_at?: string | null
+          locked?: boolean | null
           pain_points?: Json | null
           problem_statement?: string | null
           project_id?: string | null
@@ -367,6 +417,62 @@ export type Database = {
           updated_at?: string | null
         }
         Relationships: []
+      }
+      share_links: {
+        Row: {
+          created_at: string | null
+          created_by: string
+          description: string | null
+          expires_at: string | null
+          id: string
+          include_diagrams: boolean | null
+          included_document_ids: string[] | null
+          is_active: boolean | null
+          last_viewed_at: string | null
+          project_id: string
+          title: string | null
+          token: string
+          view_count: number | null
+        }
+        Insert: {
+          created_at?: string | null
+          created_by: string
+          description?: string | null
+          expires_at?: string | null
+          id?: string
+          include_diagrams?: boolean | null
+          included_document_ids?: string[] | null
+          is_active?: boolean | null
+          last_viewed_at?: string | null
+          project_id: string
+          title?: string | null
+          token: string
+          view_count?: number | null
+        }
+        Update: {
+          created_at?: string | null
+          created_by?: string
+          description?: string | null
+          expires_at?: string | null
+          id?: string
+          include_diagrams?: boolean | null
+          included_document_ids?: string[] | null
+          is_active?: boolean | null
+          last_viewed_at?: string | null
+          project_id?: string
+          title?: string | null
+          token?: string
+          view_count?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "share_links_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "projects"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       system_config: {
         Row: {
