@@ -139,6 +139,7 @@ export type Database = {
           document_type: string
           generated_by: string | null
           id: string
+          parent_document_id: string | null
           project_id: string | null
           sources: Json | null
           template_id: string | null
@@ -151,6 +152,7 @@ export type Database = {
           document_type: string
           generated_by?: string | null
           id?: string
+          parent_document_id?: string | null
           project_id?: string | null
           sources?: Json | null
           template_id?: string | null
@@ -163,6 +165,7 @@ export type Database = {
           document_type?: string
           generated_by?: string | null
           id?: string
+          parent_document_id?: string | null
           project_id?: string | null
           sources?: Json | null
           template_id?: string | null
@@ -170,6 +173,13 @@ export type Database = {
           version?: number | null
         }
         Relationships: [
+          {
+            foreignKeyName: "generated_documents_parent_document_id_fkey"
+            columns: ["parent_document_id"]
+            isOneToOne: false
+            referencedRelation: "generated_documents"
+            referencedColumns: ["id"]
+          },
           {
             foreignKeyName: "generated_documents_project_id_fkey"
             columns: ["project_id"]
@@ -185,6 +195,39 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      notifications: {
+        Row: {
+          created_at: string | null
+          id: string
+          is_read: boolean | null
+          message: string | null
+          project_id: string | null
+          title: string
+          type: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          id?: string
+          is_read?: boolean | null
+          message?: string | null
+          project_id?: string | null
+          title: string
+          type: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string | null
+          id?: string
+          is_read?: boolean | null
+          message?: string | null
+          project_id?: string | null
+          title?: string
+          type?: string
+          user_id?: string
+        }
+        Relationships: []
       }
       profiles: {
         Row: {
