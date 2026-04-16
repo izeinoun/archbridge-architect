@@ -286,7 +286,7 @@ If you cannot find evidence for something, say so explicitly rather than inferri
     const userPrompt = `Here are the project documents:\n\n${documentContext}${contextWarning}\n\n${INSIGHT_PROMPTS[insight_type]}`;
 
     // 4. Call AI
-    const aiResponse = await fetch('https://ai.lovable.dev/v1/chat/completions', {
+    const aiResponse = await fetch('https://ai.gateway.lovable.dev/v1/chat/completions', {
       method: 'POST',
       headers: {
         'Authorization': `Bearer ${aiApiKey}`,
