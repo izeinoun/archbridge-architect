@@ -1,7 +1,7 @@
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '@/context/AuthContext';
 import { useProjects } from '@/hooks/useProjects';
-import { FolderOpen, Plus, Settings, LogOut, Shield } from 'lucide-react';
+import { FolderOpen, Plus, Settings, LogOut, Shield, BarChart3 } from 'lucide-react';
 import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 
@@ -75,6 +75,18 @@ export default function AppSidebar({ onCreateProject }: AppSidebarProps) {
         {projects.length === 0 && (
           <p className="px-3 py-4 text-xs text-sidebar-fg/50">No projects yet</p>
         )}
+      </div>
+
+  {/* Analytics link */}
+      <div className="px-3 pb-1">
+        <button
+          onClick={() => navigate('/analytics')}
+          className={`flex w-full items-center gap-2 rounded-md px-3 py-2 text-sm transition-colors ${
+            location.pathname === '/analytics' ? 'bg-sidebar-active/15 text-sidebar-fg-bright' : 'text-sidebar-fg hover:bg-sidebar-hover hover:text-sidebar-fg-bright'
+          }`}
+        >
+          <BarChart3 className="h-4 w-4" /> Analytics
+        </button>
       </div>
 
       {/* Admin link */}

@@ -106,8 +106,8 @@ export default function ChatTab() {
 
   return (
     <div className="flex h-full">
-      {/* Left Context Panel */}
-      <div className="w-[30%] border-r border-border bg-card p-4 flex flex-col gap-4 overflow-y-auto">
+      {/* Left Context Panel - hidden on mobile */}
+      <div className="hidden md:flex w-[30%] border-r border-border bg-card p-4 flex-col gap-4 overflow-y-auto">
         <h3 className="text-sm font-semibold text-foreground">Project Context</h3>
 
         {/* Documents in context */}

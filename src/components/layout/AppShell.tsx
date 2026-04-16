@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Outlet } from 'react-router-dom';
 import AppSidebar from './AppSidebar';
+import MobileNav from './MobileNav';
 import CreateProjectModal from '@/components/projects/CreateProjectModal';
 import SearchModal from '@/components/SearchModal';
 
@@ -21,10 +22,13 @@ export default function AppShell() {
 
   return (
     <div className="flex h-screen overflow-hidden bg-background">
-      <AppSidebar onCreateProject={() => setShowCreate(true)} />
-      <main className="flex-1 overflow-y-auto">
+      <div className="hidden lg:block">
+        <AppSidebar onCreateProject={() => setShowCreate(true)} />
+      </div>
+      <main className="flex-1 overflow-y-auto pb-14 lg:pb-0">
         <Outlet />
       </main>
+      <MobileNav />
       <CreateProjectModal open={showCreate} onClose={() => setShowCreate(false)} />
       <SearchModal open={showSearch} onClose={() => setShowSearch(false)} />
     </div>

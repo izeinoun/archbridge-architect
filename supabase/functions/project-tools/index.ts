@@ -298,6 +298,78 @@ serve(async (req) => {
       });
     }
 
+    // Analytics action
+    if (body.action === 'analytics') {
+      const { data: memberRows } = await supabase.from('project_members').select('project_id').eq('user_id', user.id);
+      const { data: ownedProjects } = await supabase.from('projects').select('*').eq('owner_id', user.id);
+      const projectIds = [...new Set([...(memberRows || []).map(m => m.project_id), ...(ownedProjects || []).map(p => p.id)].filter(Boolean))];
+      
+      const { data: allProjects } = await supabase.from('projects').select('*').in('id', projectIds.length > 0 ? projectIds : ['none']);
+      const projects = allProjects || [];
+      
+      // Build funnel
+      let haveDocs = 0, haveInsights = 0, haveGenDocs = 0, haveSow = 0, haveShareLink = 0;
+      const projectsWithHealth = [];
+      let totalHealthScore = 0;
+      let totalDocsPerProject = 0;
+
+      for (const p of projects) {
+        const { count: docCount } = await supabase.from('documents').select('*', { count: 'exact', head: true }).eq('project_id', p.id);
+        const { count: genDocCount } = await supabase.from('generated_documents').select('*', { count: 'exact', head: true }).eq('project_id', p.id).neq('document_type', 'critique').neq('document_type', 'diagram');
+        const { count: memberCount } = await supabase.from('project_members').select('*', { count: 'exact', head: true }).eq('project_id', p.id);
+        const { data: insightsRow } = await supabase.from('project_insights').select('*').eq('project_id', p.id).single();
+        const { data: sowDocs } = await supabase.from('generated_documents').select('id').eq('project_id', p.id).eq('document_type', 'statement_of_work').limit(1);
+        const { data: shareLinks } = await supabase.from('share_links').select('id').eq('project_id', p.id).eq('is_active', true).limit(1);
+
+        const dc = docCount || 0;
+        if (dc > 0) haveDocs++;
+        totalDocsPerProject += dc;
+
+        let insightsGenerated = 0;
+        if (insightsRow) {
+          for (const f of ['pain_points', 'customer_goals', 'problem_statement', 'current_workflows', 'solution_components', 'implementation_roadmap', 'expected_outcomes']) {
+            const val = (insightsRow as any)[f];
+            if (val && ((typeof val === 'string' && val.length > 2) || (typeof val === 'object' && Object.keys(val).length > 0))) insightsGenerated++;
+          }
+        }
+        if (insightsGenerated > 0) haveInsights++;
+
+        const gc = genDocCount || 0;
+        if (gc > 0) haveGenDocs++;
+        if ((sowDocs || []).length > 0) haveSow++;
+        if ((shareLinks || []).length > 0) haveShareLink++;
+
+        const docScore = dc === 0 ? 0 : dc <= 2 ? 10 : dc <= 5 ? 18 : 25;
+        const insightScore = insightsGenerated * 5;
+        const genScore = gc === 0 ? 0 : gc === 1 ? 8 : gc === 2 ? 14 : 20;
+        const daysSince = (Date.now() - new Date(p.updated_at || p.created_at).getTime()) / 86400000;
+        const recencyScore = daysSince <= 7 ? 10 : daysSince <= 30 ? 6 : daysSince <= 90 ? 3 : 0;
+        const mc = (memberCount || 0) + 1;
+        const teamScore = mc <= 1 ? 4 : mc <= 3 ? 7 : 10;
+        const healthScore = docScore + insightScore + genScore + recencyScore + teamScore;
+        totalHealthScore += healthScore;
+
+        projectsWithHealth.push({ ...p, health_score: healthScore, member_count: mc, document_count: dc, insights_generated: insightsGenerated, generated_doc_count: gc });
+      }
+
+      return new Response(JSON.stringify({
+        total_projects: projects.length,
+        funnel: {
+          total_projects: projects.length,
+          have_documents: haveDocs,
+          have_insights: haveInsights,
+          have_generated_docs: haveGenDocs,
+          have_sow: haveSow,
+          have_share_link: haveShareLink,
+        },
+        velocity_metrics: {
+          avg_docs_per_project: projects.length ? (totalDocsPerProject / projects.length) : 0,
+          avg_health_score: projects.length ? (totalHealthScore / projects.length) : 0,
+        },
+        projects_with_health: projectsWithHealth,
+      }), { headers: { ...corsHeaders, 'Content-Type': 'application/json' } });
+    }
+
     // Generate diagram
     const { project_id, diagram_type, user_instructions } = body;
 

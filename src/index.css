@@ -92,3 +92,16 @@
     @apply bg-border rounded-full;
   }
 }
+
+/* Mobile safe area */
+.mobile-nav {
+  padding-bottom: env(safe-area-inset-bottom);
+}
+
+/* Touch-friendly sizing */
+@media (hover: none) {
+  button, a, [role="button"] {
+    min-height: 44px;
+    min-width: 44px;
+  }
+}
