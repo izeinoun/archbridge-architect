@@ -1,5 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
+import { useAuth } from '@/context/AuthContext';
 
 export type InsightType =
   | 'pain_points' | 'customer_goals' | 'problem_statement'
@@ -8,6 +9,7 @@ export type InsightType =
 
 export function useInsights(projectId: string | undefined) {
   const queryClient = useQueryClient();
+  const { user, profile } = useAuth();
 
   const { data: insights, isLoading } = useQuery({
     queryKey: ['insights', projectId],
@@ -37,6 +39,77 @@ export function useInsights(projectId: string | undefined) {
     },
   });
 
+  const approveInsight = useMutation({
+    mutationFn: async (insightType: InsightType) => {
+      const currentApproval = ((insights as any)?.approval_status || {}) as Record<string, any>;
+      const currentStatus = currentApproval[insightType]?.status;
+      
+      const newStatus = currentStatus === 'approved' ? 'pending' : 'approved';
+      const updated = {
+        ...currentApproval,
+        [insightType]: {
+          status: newStatus,
+          approved_by: newStatus === 'approved' ? user?.id : null,
+          approved_by_name: newStatus === 'approved' ? profile?.full_name : null,
+          approved_at: newStatus === 'approved' ? new Date().toISOString() : null,
+          notes: null,
+        },
+      };
+
+      const { error } = await supabase
+        .from('project_insights')
+        .update({ approval_status: updated })
+        .eq('project_id', projectId!);
+      if (error) throw error;
+    },
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: ['insights', projectId] }),
+  });
+
+  const rejectInsight = useMutation({
+    mutationFn: async ({ type, notes }: { type: InsightType; notes: string }) => {
+      const currentApproval = ((insights as any)?.approval_status || {}) as Record<string, any>;
+      const updated = {
+        ...currentApproval,
+        [type]: {
+          status: 'rejected',
+          approved_by: user?.id,
+          approved_by_name: profile?.full_name,
+          approved_at: new Date().toISOString(),
+          notes,
+        },
+      };
+
+      const { error } = await supabase
+        .from('project_insights')
+        .update({ approval_status: updated })
+        .eq('project_id', projectId!);
+      if (error) throw error;
+    },
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: ['insights', projectId] }),
+  });
+
+  const lockInsights = useMutation({
+    mutationFn: async () => {
+      const { error } = await supabase
+        .from('project_insights')
+        .update({ locked: true })
+        .eq('project_id', projectId!);
+      if (error) throw error;
+    },
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: ['insights', projectId] }),
+  });
+
+  const unlockInsights = useMutation({
+    mutationFn: async () => {
+      const { error } = await supabase
+        .from('project_insights')
+        .update({ locked: false })
+        .eq('project_id', projectId!);
+      if (error) throw error;
+    },
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: ['insights', projectId] }),
+  });
+
   const getInsightData = (type: InsightType): any => {
     if (!insights) return null;
     const raw = (insights as any)[type];
@@ -47,5 +120,8 @@ export function useInsights(projectId: string | undefined) {
     return raw;
   };
 
-  return { insights, isLoading, generateInsight, getInsightData };
+  return {
+    insights, isLoading, generateInsight, getInsightData,
+    approveInsight, rejectInsight, lockInsights, unlockInsights,
+  };
 }
