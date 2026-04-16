@@ -15,6 +15,7 @@ import DocumentsTab from "@/pages/project/tabs/DocumentsTab";
 import ChatTab from "@/pages/project/tabs/ChatTab";
 import GeneratedDocsTab from "@/pages/project/tabs/GeneratedDocsTab";
 import SettingsTab from "@/pages/project/tabs/SettingsTab";
+import AdminConfigPage from "./pages/AdminConfigPage";
 import NotFound from "./pages/NotFound.tsx";
 
 const queryClient = new QueryClient();
