@@ -1,7 +1,10 @@
 import { useParams, useNavigate, useLocation, Outlet, Link } from 'react-router-dom';
 import { useProject } from '@/hooks/useProject';
-import { ChevronLeft, FileText, MessageSquare, Lightbulb, FileOutput, Settings, GitGraph } from 'lucide-react';
+import { usePresence } from '@/hooks/usePresence';
+import PresenceBar from '@/components/PresenceBar';
+import { ChevronLeft, FileText, MessageSquare, Lightbulb, FileOutput, Settings, GitGraph, Clock } from 'lucide-react';
 import NotificationBell from '@/components/NotificationBell';
+import { useEffect } from 'react';
 
 const tabs = [
   { path: '', label: 'Insights', icon: Lightbulb },
@@ -9,14 +12,23 @@ const tabs = [
   { path: '/chat', label: 'Chat', icon: MessageSquare },
   { path: '/generated', label: 'Generated Docs', icon: FileOutput },
   { path: '/diagrams', label: 'Diagrams', icon: GitGraph },
+  { path: '/timeline', label: 'Timeline', icon: Clock },
   { path: '/settings', label: 'Settings', icon: Settings },
 ];
 
 export default function ProjectShell() {
   const { id } = useParams<{ id: string }>();
   const { project, isLoading } = useProject(id);
+  const { clients, isConnected, sendTabChange } = usePresence(id);
   const location = useLocation();
   const navigate = useNavigate();
+
+  const basePath = `/projects/${id}`;
+  const currentTab = location.pathname.replace(basePath, '') || '';
+
+  useEffect(() => {
+    sendTabChange(currentTab.replace('/', '') || '');
+  }, [currentTab, sendTabChange]);
 
   if (isLoading) {
     return (
@@ -37,12 +49,8 @@ export default function ProjectShell() {
     );
   }
 
-  const basePath = `/projects/${id}`;
-  const currentTab = location.pathname.replace(basePath, '') || '';
-
   return (
     <div className="flex h-full flex-col">
-      {/* Top nav */}
       <header className="border-b border-border bg-card px-6 py-4">
         <div className="mb-3 flex items-center gap-2 text-sm text-muted-foreground">
           <button onClick={() => navigate('/projects')} className="hover:text-foreground transition-colors">
@@ -52,7 +60,11 @@ export default function ProjectShell() {
           <span>/</span>
           <span className="text-foreground font-medium">{project.name}</span>
           <span className="text-muted-foreground">— {project.customer_name}</span>
-          <div className="ml-auto"><NotificationBell /></div>
+          <div className="ml-auto flex items-center gap-3">
+            <PresenceBar clients={clients} />
+            {isConnected && <span className="h-2 w-2 rounded-full bg-green-400" title="Real-time sync active" />}
+            <NotificationBell />
+          </div>
         </div>
         <nav className="flex gap-1">
           {tabs.map(tab => {
