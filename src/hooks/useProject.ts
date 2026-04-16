@@ -57,5 +57,32 @@ export function useProject(projectId: string | undefined) {
     },
   });
 
-  return { project, members, isLoading, updateProject };
+  const inviteMember = useMutation({
+    mutationFn: async ({ email, role }: { email: string; role?: string }) => {
+      const { data, error } = await supabase.functions.invoke('invite-member', {
+        body: { email, project_id: projectId, role: role || 'contributor' },
+      });
+      if (error) throw error;
+      if (data?.error) throw new Error(data.error);
+      return data;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['project-members', projectId] });
+    },
+  });
+
+  const removeMember = useMutation({
+    mutationFn: async (memberId: string) => {
+      const { error } = await supabase
+        .from('project_members')
+        .delete()
+        .eq('id', memberId);
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['project-members', projectId] });
+    },
+  });
+
+  return { project, members, isLoading, updateProject, inviteMember, removeMember };
 }
