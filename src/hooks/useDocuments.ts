@@ -86,11 +86,17 @@ export function useDocuments(projectId: string | undefined) {
     onSuccess: () => queryClient.invalidateQueries({ queryKey: ['documents', projectId] }),
   });
 
+  const retryDocument = useMutation({
+    mutationFn: async (docId: string) => {
+      await supabase.from('documents').update({ parse_status: 'processing', parse_error: null }).eq('id', docId);
+      supabase.functions.invoke('process-document', { body: { document_id: docId } }).catch(console.error);
+    },
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: ['documents', projectId] }),
+  });
+
   const deleteDocument = useMutation({
     mutationFn: async (doc: DocumentRecord) => {
-      // Delete from storage
       await supabase.storage.from('documents').remove([doc.file_path]);
-      // Delete record
       const { error } = await supabase.from('documents').delete().eq('id', doc.id);
       if (error) throw error;
     },
@@ -99,5 +105,5 @@ export function useDocuments(projectId: string | undefined) {
 
   const hasReadyDocs = documents.some(d => d.parse_status === 'done');
 
-  return { documents, isLoading, uploadDocuments, deleteDocument, hasReadyDocs };
+  return { documents, isLoading, uploadDocuments, deleteDocument, retryDocument, hasReadyDocs };
 }
