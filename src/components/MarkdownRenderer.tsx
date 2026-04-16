@@ -10,6 +10,7 @@ export default function MarkdownRenderer({ content, className = '' }: Props) {
   return (
     <div className={`prose prose-sm max-w-none dark:prose-invert ${className}`}>
     <ReactMarkdown
+      children={content}
       remarkPlugins={[remarkGfm]}
       components={{
         table: ({ children }) => (
