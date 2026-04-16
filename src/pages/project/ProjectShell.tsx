@@ -1,6 +1,6 @@
 import { useParams, useNavigate, useLocation, Outlet, Link } from 'react-router-dom';
 import { useProject } from '@/hooks/useProject';
-import { ChevronLeft, FileText, MessageSquare, Lightbulb, FileOutput, Settings } from 'lucide-react';
+import { ChevronLeft, FileText, MessageSquare, Lightbulb, FileOutput, Settings, GitGraph } from 'lucide-react';
 import NotificationBell from '@/components/NotificationBell';
 
 const tabs = [
@@ -8,6 +8,7 @@ const tabs = [
   { path: '/documents', label: 'Documents', icon: FileText },
   { path: '/chat', label: 'Chat', icon: MessageSquare },
   { path: '/generated', label: 'Generated Docs', icon: FileOutput },
+  { path: '/diagrams', label: 'Diagrams', icon: GitGraph },
   { path: '/settings', label: 'Settings', icon: Settings },
 ];
 

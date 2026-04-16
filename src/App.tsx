@@ -14,6 +14,7 @@ import InsightsTab from "@/pages/project/tabs/InsightsTab";
 import DocumentsTab from "@/pages/project/tabs/DocumentsTab";
 import ChatTab from "@/pages/project/tabs/ChatTab";
 import GeneratedDocsTab from "@/pages/project/tabs/GeneratedDocsTab";
+import DiagramsTab from "@/pages/project/tabs/DiagramsTab";
 import SettingsTab from "@/pages/project/tabs/SettingsTab";
 import AdminConfigPage from "./pages/AdminConfigPage";
 import NotFound from "./pages/NotFound.tsx";
@@ -38,6 +39,7 @@ const App = () => (
                 <Route path="documents" element={<DocumentsTab />} />
                 <Route path="chat" element={<ChatTab />} />
                 <Route path="generated" element={<GeneratedDocsTab />} />
+                <Route path="diagrams" element={<DiagramsTab />} />
                 <Route path="settings" element={<SettingsTab />} />
               </Route>
               <Route path="admin/config" element={<AdminConfigPage />} />
