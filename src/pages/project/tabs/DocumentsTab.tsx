@@ -2,10 +2,11 @@ import { useState, useCallback } from 'react';
 import { useParams } from 'react-router-dom';
 import { useDropzone } from 'react-dropzone';
 import { useDocuments, DocumentRecord } from '@/hooks/useDocuments';
+import { supabase } from '@/integrations/supabase/client';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
-import { Upload, FileText, Image, Presentation, File, Trash2, Eye, X } from 'lucide-react';
+import { Upload, FileText, Image, Presentation, File, Trash2, Eye, X, RotateCw } from 'lucide-react';
 import { toast } from 'sonner';
 
 const fileIcons: Record<string, React.ReactNode> = {
@@ -40,7 +41,7 @@ function timeAgo(dateStr: string) {
 
 export default function DocumentsTab() {
   const { id: projectId } = useParams<{ id: string }>();
-  const { documents, uploadDocuments, deleteDocument } = useDocuments(projectId);
+  const { documents, uploadDocuments, deleteDocument, retryDocument } = useDocuments(projectId);
   const [selected, setSelected] = useState<DocumentRecord | null>(null);
   const [showFullText, setShowFullText] = useState(false);
   const [deleting, setDeleting] = useState<string | null>(null);
@@ -155,7 +156,16 @@ export default function DocumentsTab() {
                   <Badge variant="outline" className="text-[10px] border-success text-success">✅ Ready</Badge>
                 )}
                 {doc.parse_status === 'error' && (
-                  <Badge variant="outline" className="text-[10px] border-destructive text-destructive" title={doc.parse_error || 'Error'}>❌ Error</Badge>
+                  <div className="flex items-center gap-1">
+                    <Badge variant="outline" className="text-[10px] border-destructive text-destructive" title={doc.parse_error || 'Error'}>❌ Error</Badge>
+                    <button
+                      onClick={(e) => { e.stopPropagation(); retryDocument.mutate(doc.id); toast.info('Retrying parse...'); }}
+                      className="p-1 rounded hover:bg-muted text-muted-foreground hover:text-foreground"
+                      title="Retry parsing"
+                    >
+                      <RotateCw className="h-3 w-3" />
+                    </button>
+                  </div>
                 )}
                 <button
                   onClick={e => { e.stopPropagation(); handleDelete(doc); }}
