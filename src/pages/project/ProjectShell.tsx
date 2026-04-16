@@ -52,6 +52,7 @@ export default function ProjectShell() {
           <span className="text-foreground font-medium">{project.name}</span>
           <span className="text-muted-foreground">— {project.customer_name}</span>
           <div className="ml-auto"><NotificationBell /></div>
+        </div>
         <nav className="flex gap-1">
           {tabs.map(tab => {
             const isActive = currentTab === tab.path;
