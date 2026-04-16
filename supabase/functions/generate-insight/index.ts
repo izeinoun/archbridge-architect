@@ -298,7 +298,7 @@ If you cannot find evidence for something, say so explicitly rather than inferri
           { role: 'system', content: systemPrompt },
           { role: 'user', content: userPrompt },
         ],
-        max_tokens: 4000,
+        max_tokens: 16000,
       }),
     });
 
