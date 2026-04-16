@@ -48,5 +48,6 @@ export default function MarkdownRenderer({ content, className = '' }: Props) {
         hr: () => <hr className="my-6 border-border" />,
       }}
     />
+    </div>
   );
 }
