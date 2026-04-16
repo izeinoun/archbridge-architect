@@ -1,17 +1,28 @@
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '@/context/AuthContext';
 import { useProjects } from '@/hooks/useProjects';
-import { FolderOpen, Plus, Settings, LogOut } from 'lucide-react';
+import { FolderOpen, Plus, Settings, LogOut, Shield } from 'lucide-react';
+import { useQuery } from '@tanstack/react-query';
+import { supabase } from '@/integrations/supabase/client';
 
 interface AppSidebarProps {
   onCreateProject: () => void;
 }
 
 export default function AppSidebar({ onCreateProject }: AppSidebarProps) {
-  const { profile, signOut } = useAuth();
+  const { profile, user, signOut } = useAuth();
   const { projects } = useProjects();
   const navigate = useNavigate();
   const location = useLocation();
+
+  const { data: isAdmin } = useQuery({
+    queryKey: ['is-admin', user?.id],
+    queryFn: async () => {
+      const { data } = await supabase.from('user_roles').select('role').eq('user_id', user!.id).eq('role', 'admin').single();
+      return !!data;
+    },
+    enabled: !!user,
+  });
 
   const statusDot = (status: string) => {
     if (status === 'active') return 'bg-emerald-400';
@@ -65,6 +76,20 @@ export default function AppSidebar({ onCreateProject }: AppSidebarProps) {
           <p className="px-3 py-4 text-xs text-sidebar-fg/50">No projects yet</p>
         )}
       </div>
+
+      {/* Admin link */}
+      {isAdmin && (
+        <div className="px-3 pb-1">
+          <button
+            onClick={() => navigate('/admin/config')}
+            className={`flex w-full items-center gap-2 rounded-md px-3 py-2 text-sm transition-colors ${
+              location.pathname.startsWith('/admin') ? 'bg-sidebar-active/15 text-sidebar-fg-bright' : 'text-sidebar-fg hover:bg-sidebar-hover hover:text-sidebar-fg-bright'
+            }`}
+          >
+            <Shield className="h-4 w-4" /> Admin
+          </button>
+        </div>
+      )}
 
       {/* User section */}
       <div className="border-t border-sidebar-border p-3">
