@@ -8,9 +8,9 @@ interface Props {
 
 export default function MarkdownRenderer({ content, className = '' }: Props) {
   return (
+    <div className={`prose prose-sm max-w-none dark:prose-invert ${className}`}>
     <ReactMarkdown
       remarkPlugins={[remarkGfm]}
-      className={`prose prose-sm max-w-none dark:prose-invert ${className}`}
       components={{
         table: ({ children }) => (
           <div className="overflow-x-auto my-4">
