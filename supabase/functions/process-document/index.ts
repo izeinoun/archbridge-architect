@@ -87,11 +87,9 @@ serve(async (req) => {
                 role: 'user',
                 content: [
                   {
-                    type: 'file',
-                    file: {
-                      filename: doc.file_name,
-                      content_type: mimeMap[fileType] || 'application/octet-stream',
-                      data: base64,
+                    type: 'image_url',
+                    image_url: {
+                      url: `data:${mimeMap[fileType] || 'application/octet-stream'};base64,${base64}`,
                     },
                   },
                   {
