@@ -126,6 +126,86 @@ export type Database = {
           },
         ]
       }
+      crm_integrations: {
+        Row: {
+          config: Json | null
+          connector_type: string
+          created_by: string
+          field_mappings: Json | null
+          id: string
+          is_enabled: boolean | null
+          updated_at: string | null
+        }
+        Insert: {
+          config?: Json | null
+          connector_type: string
+          created_by: string
+          field_mappings?: Json | null
+          id?: string
+          is_enabled?: boolean | null
+          updated_at?: string | null
+        }
+        Update: {
+          config?: Json | null
+          connector_type?: string
+          created_by?: string
+          field_mappings?: Json | null
+          id?: string
+          is_enabled?: boolean | null
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
+      crm_sync_log: {
+        Row: {
+          created_at: string | null
+          crm_record_id: string | null
+          direction: string | null
+          error_message: string | null
+          id: string
+          integration_id: string | null
+          payload_sent: Json | null
+          project_id: string | null
+          response_received: Json | null
+          status: string
+          sync_type: string
+        }
+        Insert: {
+          created_at?: string | null
+          crm_record_id?: string | null
+          direction?: string | null
+          error_message?: string | null
+          id?: string
+          integration_id?: string | null
+          payload_sent?: Json | null
+          project_id?: string | null
+          response_received?: Json | null
+          status: string
+          sync_type: string
+        }
+        Update: {
+          created_at?: string | null
+          crm_record_id?: string | null
+          direction?: string | null
+          error_message?: string | null
+          id?: string
+          integration_id?: string | null
+          payload_sent?: Json | null
+          project_id?: string | null
+          response_received?: Json | null
+          status?: string
+          sync_type?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "crm_sync_log_integration_id_fkey"
+            columns: ["integration_id"]
+            isOneToOne: false
+            referencedRelation: "crm_integrations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       documents: {
         Row: {
           created_at: string | null
@@ -388,31 +468,40 @@ export type Database = {
       projects: {
         Row: {
           created_at: string | null
+          crm_deal_id: string | null
+          crm_synced_at: string | null
           customer_name: string
           description: string | null
           id: string
           name: string
           owner_id: string | null
+          pipeline_stage: string | null
           status: string | null
           updated_at: string | null
         }
         Insert: {
           created_at?: string | null
+          crm_deal_id?: string | null
+          crm_synced_at?: string | null
           customer_name: string
           description?: string | null
           id?: string
           name: string
           owner_id?: string | null
+          pipeline_stage?: string | null
           status?: string | null
           updated_at?: string | null
         }
         Update: {
           created_at?: string | null
+          crm_deal_id?: string | null
+          crm_synced_at?: string | null
           customer_name?: string
           description?: string | null
           id?: string
           name?: string
           owner_id?: string | null
+          pipeline_stage?: string | null
           status?: string | null
           updated_at?: string | null
         }
