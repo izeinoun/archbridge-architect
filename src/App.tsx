@@ -16,7 +16,9 @@ import ChatTab from "@/pages/project/tabs/ChatTab";
 import GeneratedDocsTab from "@/pages/project/tabs/GeneratedDocsTab";
 import DiagramsTab from "@/pages/project/tabs/DiagramsTab";
 import SettingsTab from "@/pages/project/tabs/SettingsTab";
+import ActivityTimelineTab from "@/pages/project/tabs/ActivityTimelineTab";
 import AdminConfigPage from "./pages/AdminConfigPage";
+import PortalPage from "./pages/portal/PortalPage";
 import NotFound from "./pages/NotFound.tsx";
 
 const queryClient = new QueryClient();
@@ -40,10 +42,12 @@ const App = () => (
                 <Route path="chat" element={<ChatTab />} />
                 <Route path="generated" element={<GeneratedDocsTab />} />
                 <Route path="diagrams" element={<DiagramsTab />} />
+                <Route path="timeline" element={<ActivityTimelineTab />} />
                 <Route path="settings" element={<SettingsTab />} />
               </Route>
               <Route path="admin/config" element={<AdminConfigPage />} />
             </Route>
+            <Route path="/portal/:token" element={<PortalPage />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </AuthProvider>
