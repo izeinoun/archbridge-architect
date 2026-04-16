@@ -40,6 +40,7 @@ const App = () => (
                 <Route path="generated" element={<GeneratedDocsTab />} />
                 <Route path="settings" element={<SettingsTab />} />
               </Route>
+              <Route path="admin/config" element={<AdminConfigPage />} />
             </Route>
             <Route path="*" element={<NotFound />} />
           </Routes>
