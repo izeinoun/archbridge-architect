@@ -11,9 +11,9 @@ import { Badge } from '@/components/ui/badge';
 import { Switch } from '@/components/ui/switch';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { toast } from 'sonner';
-import { Shield, Users, FileText, Settings, Loader2, Save, RotateCcw } from 'lucide-react';
+import { Shield, Users, FileText, Settings, Loader2, Save, RotateCcw, Link2 } from 'lucide-react';
 
-type AdminTab = 'overview' | 'users' | 'templates' | 'prompt';
+type AdminTab = 'overview' | 'users' | 'templates' | 'integrations' | 'prompt';
 
 export default function AdminConfigPage() {
   const { user } = useAuth();
@@ -25,6 +25,7 @@ export default function AdminConfigPage() {
     { id: 'overview' as AdminTab, label: 'Overview', icon: Shield },
     { id: 'users' as AdminTab, label: 'Users', icon: Users },
     { id: 'templates' as AdminTab, label: 'Templates', icon: FileText },
+    { id: 'integrations' as AdminTab, label: 'Integrations', icon: Link2 },
     { id: 'prompt' as AdminTab, label: 'System Prompt', icon: Settings },
   ];
 
@@ -48,6 +49,7 @@ export default function AdminConfigPage() {
       {tab === 'overview' && <OverviewTab />}
       {tab === 'users' && <UsersTab />}
       {tab === 'templates' && <TemplatesTab />}
+      {tab === 'integrations' && <IntegrationsTab />}
       {tab === 'prompt' && <SystemPromptTab />}
     </div>
   );
