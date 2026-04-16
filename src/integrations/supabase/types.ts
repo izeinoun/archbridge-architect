@@ -136,6 +136,7 @@ export type Database = {
         Row: {
           content: string
           created_at: string | null
+          diagram_description: string | null
           document_type: string
           generated_by: string | null
           id: string
@@ -149,6 +150,7 @@ export type Database = {
         Insert: {
           content: string
           created_at?: string | null
+          diagram_description?: string | null
           document_type: string
           generated_by?: string | null
           id?: string
@@ -162,6 +164,7 @@ export type Database = {
         Update: {
           content?: string
           created_at?: string | null
+          diagram_description?: string | null
           document_type?: string
           generated_by?: string | null
           id?: string
