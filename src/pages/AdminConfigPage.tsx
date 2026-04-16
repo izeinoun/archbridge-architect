@@ -327,3 +327,39 @@ function SystemPromptTab() {
     </div>
   );
 }
+
+function IntegrationsTab() {
+  return (
+    <div className="space-y-4">
+      <div className="bg-card border border-border rounded-lg p-5">
+        <div className="flex items-center gap-3 mb-3">
+          <div className="h-10 w-10 rounded-lg bg-[hsl(24,95%,53%)]/10 flex items-center justify-center">
+            <span className="text-lg font-bold" style={{ color: '#FF7A59' }}>H</span>
+          </div>
+          <div className="flex-1">
+            <h3 className="text-sm font-semibold text-foreground">HubSpot CRM</h3>
+            <p className="text-xs text-muted-foreground">Sync deals, contacts, and activities</p>
+          </div>
+          <Badge variant="secondary" className="text-xs">Not Configured</Badge>
+        </div>
+        <p className="text-xs text-muted-foreground mb-3">
+          Connect HubSpot to automatically sync project pipeline stages, log activities, and create deals from ArchBridge engagements.
+        </p>
+        <div className="bg-muted/50 rounded-lg p-3 text-xs text-muted-foreground">
+          <strong>Feature flagged:</strong> HubSpot integration is scaffolded but disabled. Enable via HUBSPOT_ENABLED environment variable when ready.
+        </div>
+      </div>
+
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+        <div className="bg-card border border-border rounded-lg p-4 opacity-50">
+          <h4 className="text-sm font-medium text-foreground mb-1">Salesforce CRM</h4>
+          <Badge variant="outline" className="text-[10px]">Coming Soon</Badge>
+        </div>
+        <div className="bg-card border border-border rounded-lg p-4 opacity-50">
+          <h4 className="text-sm font-medium text-foreground mb-1">Microsoft Dynamics</h4>
+          <Badge variant="outline" className="text-[10px]">Coming Soon</Badge>
+        </div>
+      </div>
+    </div>
+  );
+}
