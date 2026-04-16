@@ -1,6 +1,7 @@
 import { useParams, useNavigate, useLocation, Outlet, Link } from 'react-router-dom';
 import { useProject } from '@/hooks/useProject';
 import { ChevronLeft, FileText, MessageSquare, Lightbulb, FileOutput, Settings } from 'lucide-react';
+import NotificationBell from '@/components/NotificationBell';
 
 const tabs = [
   { path: '', label: 'Insights', icon: Lightbulb },
@@ -50,6 +51,7 @@ export default function ProjectShell() {
           <span>/</span>
           <span className="text-foreground font-medium">{project.name}</span>
           <span className="text-muted-foreground">— {project.customer_name}</span>
+          <div className="ml-auto"><NotificationBell /></div>
         </div>
         <nav className="flex gap-1">
           {tabs.map(tab => {
